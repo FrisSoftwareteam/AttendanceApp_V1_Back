@@ -28,6 +28,15 @@ type NetworkLocation = {
   source: string;
 };
 
+type ProviderResult = {
+  city?: string;
+  region?: string;
+  country?: string;
+  latitude?: number;
+  longitude?: number;
+  ok?: boolean;
+};
+
 async function getNetworkLocation(): Promise<NetworkLocation | null> {
   const fetcher = await getFetch();
 
@@ -35,18 +44,19 @@ async function getNetworkLocation(): Promise<NetworkLocation | null> {
     {
       name: "ipapi",
       url: "https://ipapi.co/json/",
-      parse: (data: any) => ({
+      parse: (data: any): ProviderResult => ({
         city: data?.city,
         region: data?.region,
         country: data?.country_name,
         latitude: data?.latitude,
-        longitude: data?.longitude
+        longitude: data?.longitude,
+        ok: true
       })
     },
     {
       name: "ipwhois",
       url: "https://ipwho.is/",
-      parse: (data: any) => ({
+      parse: (data: any): ProviderResult => ({
         city: data?.city,
         region: data?.region,
         country: data?.country,
@@ -58,7 +68,7 @@ async function getNetworkLocation(): Promise<NetworkLocation | null> {
     {
       name: "ipapi-com",
       url: "http://ip-api.com/json/",
-      parse: (data: any) => ({
+      parse: (data: any): ProviderResult => ({
         city: data?.city,
         region: data?.regionName,
         country: data?.country,

@@ -187,9 +187,10 @@ router.get("/export", requireAuth, requireRole("admin"), async (req, res) => {
           });
           continue;
         }
+        const timeZone = item.timezone ?? undefined;
         rows.push({
           Date: dateKey,
-          Time: formatTimeForTimeZone(item.capturedAt, item.timezone),
+          Time: formatTimeForTimeZone(item.capturedAt, timeZone),
           Employee: item.userName,
           Status: statusLabel(getStatusForRecord(item, cutoffTime)),
           Location: item.locationLabel,
@@ -233,14 +234,17 @@ router.get("/users/:id/export", requireAuth, requireRole("admin"), async (req, r
     const cutoffTime = await getCutoffTime();
 
     const headers = ["Date", "Time", "Employee", "Status", "Location", "Flag Comment"];
-    const rows = items.map((item) => ({
-      Date: formatDateForTimeZone(item.capturedAt, item.timezone),
-      Time: formatTimeForTimeZone(item.capturedAt, item.timezone),
+    const rows = items.map((item) => {
+      const timeZone = item.timezone ?? undefined;
+      return {
+        Date: formatDateForTimeZone(item.capturedAt, timeZone),
+        Time: formatTimeForTimeZone(item.capturedAt, timeZone),
       Employee: item.userName,
       Status: statusLabel(getStatusForRecord(item, cutoffTime)),
       Location: item.locationLabel,
       "Flag Comment": item.flagComment ?? ""
-    }));
+      };
+    });
 
     const buffer = buildWorkbook(rows, headers);
     const safeName = toSafeFilename(user.name);

@@ -22,7 +22,11 @@ export async function reverseGeocode(latitude: number, longitude: number): Promi
   }
 }
 
-async function reverseGeocodeNominatim(fetcher: typeof fetch, latitude: number, longitude: number) {
+async function reverseGeocodeNominatim(
+  fetcher: typeof fetch,
+  latitude: number,
+  longitude: number
+): Promise<GeocodeResult | null> {
   const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
   const userAgent = process.env.REVERSE_GEOCODE_USER_AGENT ?? "attendance-app";
   try {
@@ -41,7 +45,11 @@ async function reverseGeocodeNominatim(fetcher: typeof fetch, latitude: number, 
   }
 }
 
-async function reverseGeocodeMapbox(fetcher: typeof fetch, latitude: number, longitude: number) {
+async function reverseGeocodeMapbox(
+  fetcher: typeof fetch,
+  latitude: number,
+  longitude: number
+): Promise<GeocodeResult | null> {
   const token = process.env.MAPBOX_TOKEN;
   if (!token) {
     return null;
@@ -59,7 +67,11 @@ async function reverseGeocodeMapbox(fetcher: typeof fetch, latitude: number, lon
   }
 }
 
-async function reverseGeocodeGoogle(fetcher: typeof fetch, latitude: number, longitude: number) {
+async function reverseGeocodeGoogle(
+  fetcher: typeof fetch,
+  latitude: number,
+  longitude: number
+): Promise<GeocodeResult | null> {
   const key = process.env.GOOGLE_MAPS_KEY;
   if (!key) {
     return null;
